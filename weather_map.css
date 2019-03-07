@@ -15,3 +15,20 @@
 #body{
     padding: 1%;
 }
+
+img{
+    height: 40px;
+    width: 60px;
+}
+
+#summary{
+    font-size: small;
+}
+
+#summary1{
+    font-size: small;
+}
+
+#summary2{
+    font-size: small;
+}
