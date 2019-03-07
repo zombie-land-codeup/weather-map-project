@@ -15,6 +15,12 @@
 
        }
 
+       img{
+
+           width:60px;
+           height:40px;
+
+       }
 
 
 
@@ -135,7 +141,7 @@
         $.get("https://cors-anywhere.herokuapp.com/https://api.darksky.net/forecast/"+darkSkySecretCode+"/29.424349,-98.491142").done(function(weather) {
             //loop
 
-            console.log(weather.daily.data[0])
+            console.log(weather.daily.data[0]);
             console.log(weather.daily.data[1]);
             console.log(weather.daily.data[2]);
             console.log(weather.daily.data[0].temperatureLow);
@@ -162,30 +168,41 @@
 
             //if statements to verify icon status string from object. if match, push it through
 
-            function createImage(src) {
-                var img = new Image();
-                img.src = src;
-                return img;
-            }
+
 
 
 
             for (var i = 0; i < 3; i++) {
 
 
-                if(weather.daily.data[i].icon === 'partly-cloudy-day'){
-                    var img = createImage("cloudy.png");
-                }
-
 
                 $('.three-day-forecast').append('<div class="column">' + '<div class="wrapper">' +
-                    '<h2>' + weather.daily.data[i].temperatureLow +  "&#176/" + weather.daily.data[i].temperatureHigh + "&#176" +'</h2>' +
-                    '<div>' + weather.daily.data[i].icon + '</div>' +
+                    '<h2 class="appendIcon">' + weather.daily.data[i].temperatureLow +  "&#176/" + weather.daily.data[i].temperatureHigh + "&#176" +'</h2>' +
                     '<h4>' + weather.daily.data[i].icon + '</h4>' +
                     '<h4>' + 'Humidity: ' + weather.daily.data[i].humidity + '</h4>' +
                     '<h4>' + 'wind: ' + weather.daily.data[i].windSpeed + '</h4>' +
                     '<h4>' + 'Pressure: '+weather.daily.data[i].pressure + '</h4>' +
                     '</div>' +'</div>');
+
+
+                //Create a function out of this.
+                //Switch to jquery format!!!
+
+                if(weather.daily.data[i].icon === 'partly-cloudy-day'){
+
+                    var img = document.createElement("img");
+
+                    console.log(img);
+
+                    img.src="icon/cloudy.png";
+
+                    var src = document.getElementsByClassName("appendIcon");
+
+                    console.log(src);
+
+                    src.appendChildren(img);
+
+                }
 
 
             }
