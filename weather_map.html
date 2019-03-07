@@ -2,9 +2,131 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Weather-Map-Project</title>
+
+    <!-- mapBox CSS -->
+    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.css' rel='stylesheet' />
+    <!-- Custom CSS -->
+    <style>
+
+
+       html,body{
+           background-color: cornflowerblue;
+           color: grey;
+           width:auto;
+       }
+
+        #map {
+            /* the width and height may be set to any size */
+            width: 100%;
+            height: 700px;
+        }
+
+
+        .column{
+
+
+
+            float:left;
+            width:33%;
+            text-align:center;
+        }
+
+        .three-day-forecast{
+
+            content: "";
+            display: table;
+            clear: both;
+            width:100%;
+            background-color: white;
+            margin-right: 5%;
+            margin-left: 5%;
+        }
+
+
+
+
+
+    </style>
 </head>
 <body>
+
+<h1>Weather Application</h1>
+
+<h3>San Antonio</h3>
+
+
+    <div class ="three-day-forecast"></div>
+
+
+<!-- The HTML element that serves as the Mapbox container -->
+<div id='map'></div>
+
+<!--Private Access Code to Dark Sky and mapBox-->
+
+<script src="js/keys.js"></script>
+
+<!--jquery library-->
+
+<script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+
+<!-- Mapbox JS -->
+<script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.js'></script>
+
+<!--Access to ajax library-->
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+
+
+
+
+
+
+
+<!--Custom javascript-->
+
+<script>
+
+    (function() {
+        "use strict";
+
+
+
+        $.get("https://cors-anywhere.herokuapp.com/https://api.darksky.net/forecast/"+darkSkySecretCode+"/29.424349,-98.491142").done(function(weather) {
+            //loop
+
+            console.log(weather.daily.data[0]);
+            console.log(weather.daily.data[0].temperatureLow);
+            console.log(weather.daily.data[0].temperatureHigh);
+            console.log(weather.daily.data[0].summary);
+            console.log(weather.daily.data[0].humidity);
+            console.log(weather.daily.data[0].windSpeed);
+            console.log(weather.daily.data[0].pressure);
+
+
+
+            var timeConversion = new Date((weather.daily.data[0].time * 1000));
+            console.log(timeConversion.toString());
+
+
+            //Three day forecast to have. I need a daily forecast of icon, summary, humidity, windspeed round, pressure, average temperature high and low.
+
+
+
+            for (var i = 0; i < 3; i++) {
+
+                $('.three-day-forecast').append('<div class="column">' +
+                    '<h1>' + weather.daily.data[i].temperatureLow + "/" + weather.daily.data[i].temperatureHigh +'</h1>' +
+                    '</div>');
+
+
+            }
+
+        });
+
+    })();
+
+</script>
 
 </body>
 </html>
