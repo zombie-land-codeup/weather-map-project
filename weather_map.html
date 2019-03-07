@@ -3,18 +3,55 @@
 <head>
     <meta charset="UTF-8">
     <title>Zombie Land Weather</title>
+<!--css link-->
     <link rel="stylesheet" href="weather_map.css">
     <script src="keys.js"></script>
 <!--map box-->
     <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.css' rel='stylesheet' />
+<!--boot starp-->
+    <link rel="stylesheet"href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
 </head>
 <body>
 
+<div id="body">
+<div class="container">
+    <div class="row"><div class="col"><h3>Zombie Land Weather Application</h3></div></div>
+    <div class="row"><div class="col" id="location"></div></div>
 
+    <div class="row">
+        <div class="col">
+            <div class="row"><div id="temperature" class="col"></div></div>
+            <div class="row"><div id="icon" class="col"></div></div>
+            <div class="row"><div id="summary" class="col"></div></div>
+            <div class="row"><div id="humidity" class="col"></div></div>
+            <div class="row"><div id="windSpeed" class="col"></div></div>
+            <div class="row"><div id="pressure" class="col"></div></div>
+        </div>
+
+        <div class="col">
+            <div class="row"><div id="temperature1" class="col"></div></div>
+            <div class="row"><div id="icon1" class="col"></div></div>
+            <div class="row"><div id="summary1" class="col"></div></div>
+            <div class="row"><div id="humidity1" class="col"></div></div>
+            <div class="row"><div id="windSpeed1" class="col"></div></div>
+            <div class="row"><div id="pressure1" class="col"></div></div>
+        </div>
+
+        <div class="col">
+            <div class="row"><div id="temperature2" class="col"></div></div>
+            <div class="row"><div id="icon2" class="col"></div></div>
+            <div class="row"><div id="summary2" class="col"></div></div>
+            <div class="row"><div id="humidity2" class="col"></div></div>
+            <div class="row"><div id="windSpeed2" class="col"></div></div>
+            <div class="row"><div id="pressure2" class="col"></div></div>
+        </div>
+
+    </div>
+</div>
 
 <div id="map"></div>
-
-
+</div>
 
 
 
@@ -27,13 +64,12 @@
 
 
 
-
 </script>
 
 
 
 
-
+<!--jQ link-->
 <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
 <!--boot strap-->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
