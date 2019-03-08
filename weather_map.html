@@ -5,23 +5,22 @@
     <title>Weather-Map-Project</title>
 
     <!-- mapBox CSS -->
-    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.css' rel='stylesheet' />
+    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.css' rel='stylesheet'/>
     <!-- Custom CSS -->
     <style>
 
 
-       html,body{
-           background-color: cornflowerblue;
+        html, body {
+            background-color: cornflowerblue;
 
-       }
+        }
 
-       img{
+        img {
 
-           width:60px;
-           height:40px;
+            width: 60px;
+            height: 40px;
 
-       }
-
+        }
 
 
         #map {
@@ -33,47 +32,42 @@
         }
 
 
-        .wrapper{
-            border-style:solid;
+        .wrapper {
+            border-style: solid;
         }
 
 
-        .pageWrapper{
-           padding-right:10%;
-            padding-left:10%;
-            align-content:center;
-
-        }
-        .column{
-
-
-
-            float:left;
-            width:33.33%;
-            text-align:center;
+        .pageWrapper {
+            padding-right: 10%;
+            padding-left: 10%;
             align-content: center;
-            color:white;
+
+        }
+
+        .column {
+
+
+            float: left;
+            width: 33.33%;
+            text-align: center;
+            align-content: center;
+            color: white;
 
 
         }
 
-        .three-day-forecast{
+        .three-day-forecast {
 
             content: "";
             display: table;
             clear: both;
-            width:100%;
+            width: 100%;
             height: 150px;
             background-color: grey;
             margin-bottom: 2.5%;
 
 
-
-
         }
-
-
-
 
 
     </style>
@@ -82,17 +76,23 @@
 
 <h1>Weather Application</h1>
 
-<h2>San Antonio</h2>
 
-    <div class = "pageWrapper">
+Latitude: <input id = "lat" type="text" name="lat" ><br>
+Longitude: <input id = "long" type="text" name="long"><br>
+<input id = "submitLatLong" type="submit" value="Submit">
 
-        <div class ="three-day-forecast"></div>
+
+<h2 class="city"></h2>
+
+<div class="pageWrapper">
+
+    <div class="three-day-forecast"></div>
 
 
     <!-- The HTML element that serves as the Mapbox container -->
-        <div id='map'></div>
+    <div id='map'></div>
 
-    </div>
+</div>
 
 <!--Private Access Code to Dark Sky and mapBox-->
 
@@ -100,7 +100,7 @@
 
 <!--jquery library-->
 
-<script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+<script src="js/jquery-3.3.1.js"></script>
 
 <!-- Mapbox JS -->
 <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.js'></script>
@@ -110,35 +110,27 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 
 
-
-
-
-
-
 <!--Custom javascript-->
 
 <script>
 
-    (function() {
+    (function () {
         "use strict";
 
 
-        mapboxgl.accessToken = mapboxglaccessToken ;
-
-
+        mapboxgl.accessToken = mapboxglaccessToken;
 
 
         var map = new mapboxgl.Map({
             container: 'map',
             style: 'mapbox://styles/mapbox/streets-v9',
             center: [-98.491142, 29.424349],
-            zoom:10
-
+            zoom: 10
 
 
         });
 
-        $.get("https://cors-anywhere.herokuapp.com/https://api.darksky.net/forecast/"+darkSkySecretCode+"/29.424349,-98.491142").done(function(weather) {
+        $.get("https://cors-anywhere.herokuapp.com/https://api.darksky.net/forecast/" + darkSkySecretCode + "/29.424349,-98.491142").done(function (weather) {
             //loop
 
             console.log(weather.daily.data[0]);
@@ -150,7 +142,6 @@
             console.log(weather.daily.data[0].humidity);
             console.log(weather.daily.data[0].windSpeed);
             console.log(weather.daily.data[0].pressure);
-
 
 
             var timeConversion = new Date((weather.daily.data[0].time * 1000));
@@ -166,50 +157,77 @@
             // may be defined in the future.)
 
 
-            //if statements to verify icon status string from object. if match, push it through
+            //Create an array of JS objects containing a property for each of the following conditions: clear-day, clear-night, rain, snow, sleet, wind, fog, cloudy, partly-cloudy-day, partly-cloudy-night.
 
 
+            var conditionsArrayObjects = [
 
+                {
+                    icon: "partly-cloudy-day",
+
+                    img: $('<img />', {
+                        id: 'iconIDCloud',
+                        src: "icon/cloudy.png",
+                        alt: "iconAlt"
+                    })
+
+
+                },
+
+                {
+                    icon: 'rain',
+
+                    img: $('<img />', {
+                        id: 'iconIDRain',
+                        src: "icon/rain.png",
+                        alt: "iconAlt"
+                    })
+                },
+
+                {
+                    icon: 'sunny',
+
+                    img: $('<img />', {
+                        id: 'iconIDSunny',
+                        src: "icon/Sunny.png",
+                        alt: "iconAlt"
+                    })
+                }
+
+
+            ];
+
+            //Add a property to the array of icon objects for the url to the location that the appropriate icon is stored locally.
 
 
             for (var i = 0; i < 3; i++) {
 
 
-
                 $('.three-day-forecast').append('<div class="column">' + '<div class="wrapper">' +
-                    '<h2 class="appendIcon">' + weather.daily.data[i].temperatureLow +  "&#176/" + weather.daily.data[i].temperatureHigh + "&#176" +'</h2>' +
-                    '<h4>' + weather.daily.data[i].icon + '</h4>' +
+                    '<h2>' + weather.daily.data[i].temperatureLow + "&#176/" + weather.daily.data[i].temperatureHigh + "&#176" + '</h2>' +
+                    '<h2 class="appendIcon">' +
+                    '<h4>' + weather.daily.data[i].icon + '</h4>' + '</h2>' +
                     '<h4>' + 'Humidity: ' + weather.daily.data[i].humidity + '</h4>' +
                     '<h4>' + 'wind: ' + weather.daily.data[i].windSpeed + '</h4>' +
-                    '<h4>' + 'Pressure: '+weather.daily.data[i].pressure + '</h4>' +
-                    '</div>' +'</div>');
+                    '<h4>' + 'Pressure: ' + weather.daily.data[i].pressure + '</h4>' +
+                    '</div>' + '</div>');
 
 
                 //Create a function out of this.
                 //Switch to jquery format!!!
 
-                if(weather.daily.data[i].icon === 'partly-cloudy-day'){
+                for (var j = 0; j < conditionsArrayObjects.length; j++) {
 
 
-                    var img = $('<img />', {
-                        id: 'iconID',
-                        src: "icon/cloudy.png",
-                        alt: "iconAlt"
-                    });
-                    img.appendTo($('.appendIcon'));
+                    if (weather.daily.data[i].icon === conditionsArrayObjects[j].icon) {
 
 
-                    // var img = document.createElement("img");
-                    //
-                    // console.log(img);
-                    //
-                    // img.src="icon/cloudy.png";
-                    //
-                    // var src = document.getElementsByClassName("appendIcon");
-                    //
-                    // console.log(src);
-                    //
-                    // src.appendChildren(img);
+                        $('.appendIcon').html('');
+
+                        conditionsArrayObjects[j].img.appendTo($('.appendIcon'));
+
+                    }
+
 
                 }
 
