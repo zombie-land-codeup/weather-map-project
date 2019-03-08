@@ -79,7 +79,7 @@
 
 Latitude: <input id = "lat" type="text" name="lat" ><br>
 Longitude: <input id = "long" type="text" name="long"><br>
-<input id = "submitLatLong" type="submit" value="Submit">
+
 
 
 <h2 class="city"></h2>
@@ -115,136 +115,279 @@ Longitude: <input id = "long" type="text" name="long"><br>
 <script>
 
     (function () {
-        "use strict";
+            "use strict";
 
 
-        $('#submitLatLong').click(function(){
-
-            var latitude = $('#lat').val();
-            var longitutde = $('#long').val();
-
-           console.log($('#lat').val());
-        })
-
-        mapboxgl.accessToken = mapboxglaccessToken;
+            //  var latitude = $('#lat').val();
+            //  var longitude = $('#long').val();
+            //
+            // console.log($('#lat').val());
+            //  console.log($('#long').val());
 
 
-        var map = new mapboxgl.Map({
-            container: 'map',
-            style: 'mapbox://styles/mapbox/streets-v9',
-            center: [-98.491142, 29.424349],
-            zoom: 10
+            mapboxgl.accessToken = mapboxglaccessToken;
 
 
-        });
-
-        $.get("https://cors-anywhere.herokuapp.com/https://api.darksky.net/forecast/" + darkSkySecretCode + "/29.424349,-98.491142").done(function (weather) {
-            //loop
-
-            console.log(weather.daily.data[0]);
-            console.log(weather.daily.data[1]);
-            console.log(weather.daily.data[2]);
-            console.log(weather.daily.data[0].temperatureLow);
-            console.log(weather.daily.data[0].temperatureHigh);
-            console.log(weather.daily.data[0].summary);
-            console.log(weather.daily.data[0].humidity);
-            console.log(weather.daily.data[0].windSpeed);
-            console.log(weather.daily.data[0].pressure);
+            var map = new mapboxgl.Map({
+                container: 'map',
+                style: 'mapbox://styles/mapbox/streets-v9',
+                center: [-98.5795, 39.828175],
+                zoom: 3
 
 
-            var timeConversion = new Date((weather.daily.data[0].time * 1000));
-            console.log(timeConversion.toString());
+            });
+
+            var marker = new mapboxgl.Marker({
+                draggable: true
+            });
+
+            marker.setLngLat([-98.491142, 29.424349]);
+            $("#lat").append().attr("value", -98.491142);
+            $("#long").append().attr("value", 29.424349);
+            marker.addTo(map);
 
 
-            //Three day forecast to have. I need a daily forecast of icon, summary, humidity, windspeed round, pressure, average temperature high and low.
+        // marker.on('dragend', function() {
+        //     var cordination = ('/' + marker._lngLat.lat + ',' + marker._lngLat.lng);
+        //     console.log(cordination);
 
-            // icon optional
-            // A machine-readable text summary of this data point, suitable for selecting an icon for display.
-            // If defined, this property will have one of the following values: clear-day, clear-night, rain, snow, sleet, wind, fog, cloudy, partly-cloudy-day,
-            // or partly-cloudy-night. (Developers should ensure that a sensible default is defined, as additional values, such as hail, thunderstorm, or tornado,
-            // may be defined in the future.)
+            function onDragEnd() {
 
-
-            //Create an array of JS objects containing a property for each of the following conditions: clear-day, clear-night, rain, snow, sleet, wind, fog, cloudy, partly-cloudy-day, partly-cloudy-night.
+                $('.three-day-forecast').html('');
 
 
-            var conditionsArrayObjects = [
-
-                {
-                    icon: "partly-cloudy-day",
-
-                    img: $('<img />', {
-                        id: 'iconIDCloud',
-                        src: "icon/cloudy.png",
-                        alt: "iconAlt"
-                    })
+                var lngLat = marker.getLngLat();
+                $("#lat").append().attr("value", marker._lngLat.lat);
+                $("#long").append().attr("value", marker._lngLat.lng);
+                var coordination = ('/' + marker._lngLat.lat + ',' + marker._lngLat.lng);
 
 
-                },
+                $.get("https://cors-anywhere.herokuapp.com/https://api.darksky.net/forecast/" + darkSkySecretCode + coordination).done(function (weather) {
+                    //loop
 
-                {
-                    icon: 'rain',
-
-                    img: $('<img />', {
-                        id: 'iconIDRain',
-                        src: "icon/rain.png",
-                        alt: "iconAlt"
-                    })
-                },
-
-                {
-                    icon: 'sunny',
-
-                    img: $('<img />', {
-                        id: 'iconIDSunny',
-                        src: "icon/Sunny.png",
-                        alt: "iconAlt"
-                    })
-                }
+                    console.log(weather.daily.data[0]);
+                    console.log(weather.daily.data[1]);
+                    console.log(weather.daily.data[2]);
+                    console.log(weather.daily.data[0].temperatureLow);
+                    console.log(weather.daily.data[0].temperatureHigh);
+                    console.log(weather.daily.data[0].summary);
+                    console.log(weather.daily.data[0].humidity);
+                    console.log(weather.daily.data[0].windSpeed);
+                    console.log(weather.daily.data[0].pressure);
 
 
-            ];
-
-            //Add a property to the array of icon objects for the url to the location that the appropriate icon is stored locally.
-
-
-            for (var i = 0; i < 3; i++) {
+                    var timeConversion = new Date((weather.daily.data[0].time * 1000));
+                    console.log(timeConversion.toString());
 
 
-                $('.three-day-forecast').append('<div class="column">' + '<div class="wrapper">' +
-                    '<h2>' + weather.daily.data[i].temperatureLow + "&#176/" + weather.daily.data[i].temperatureHigh + "&#176" + '</h2>' +
-                    '<h2 class="appendIcon">' +
-                    '<h4>' + weather.daily.data[i].icon + '</h4>' + '</h2>' +
-                    '<h4>' + 'Humidity: ' + weather.daily.data[i].humidity + '</h4>' +
-                    '<h4>' + 'wind: ' + weather.daily.data[i].windSpeed + '</h4>' +
-                    '<h4>' + 'Pressure: ' + weather.daily.data[i].pressure + '</h4>' +
-                    '</div>' + '</div>');
+                    //Three day forecast to have. I need a daily forecast of icon, summary, humidity, windspeed round, pressure, average temperature high and low.
+
+                    // icon optional
+                    // A machine-readable text summary of this data point, suitable for selecting an icon for display.
+                    // If defined, this property will have one of the following values: clear-day, clear-night, rain, snow, sleet, wind, fog, cloudy, partly-cloudy-day,
+                    // or partly-cloudy-night. (Developers should ensure that a sensible default is defined, as additional values, such as hail, thunderstorm, or tornado,
+                    // may be defined in the future.)
 
 
-                //Create a function out of this.
-                //Switch to jquery format!!!
-
-                for (var j = 0; j < conditionsArrayObjects.length; j++) {
+                    //Create an array of JS objects containing a property for each of the following conditions: clear-day, clear-night, rain, snow, sleet, wind, fog, cloudy, partly-cloudy-day, partly-cloudy-night.
 
 
-                    if (weather.daily.data[i].icon === conditionsArrayObjects[j].icon) {
+                    var conditionsArrayObjects = [
+
+                        {
+                            icon: "partly-cloudy-day",
+
+                            img: $('<img />', {
+                                id: 'iconIDCloud',
+                                src: "icon/cloudy.png",
+                                alt: "iconAlt"
+                            })
 
 
-                        $('.appendIcon').html('');
+                        },
 
-                        conditionsArrayObjects[j].img.appendTo($('.appendIcon'));
+                        {
+                            icon: 'rain',
+
+                            img: $('<img />', {
+                                id: 'iconIDRain',
+                                src: "icon/rain.png",
+                                alt: "iconAlt"
+                            })
+                        },
+
+                        {
+                            icon: 'sunny',
+
+                            img: $('<img />', {
+                                id: 'iconIDSunny',
+                                src: "icon/Sunny.png",
+                                alt: "iconAlt"
+                            })
+                        }
+
+
+                    ];
+
+                    //Add a property to the array of icon objects for the url to the location that the appropriate icon is stored locally.
+
+
+                    for (var i = 0; i < 3; i++) {
+
+
+                        $('.three-day-forecast').append('<div class="column">' + '<div class="wrapper">' +
+                            '<h2>' + weather.daily.data[i].temperatureLow + "&#176/" + weather.daily.data[i].temperatureHigh + "&#176" + '</h2>' +
+                            '<h2 class="appendIcon">' +
+                            '<h4>' + weather.daily.data[i].icon + '</h4>' + '</h2>' +
+                            '<h4>' + 'Humidity: ' + weather.daily.data[i].humidity + '</h4>' +
+                            '<h4>' + 'wind: ' + weather.daily.data[i].windSpeed + '</h4>' +
+                            '<h4>' + 'Pressure: ' + weather.daily.data[i].pressure + '</h4>' +
+                            '</div>' + '</div>');
+
+
+
+                        //Fix Icons looping
+
+                        for (var j = 0; j < conditionsArrayObjects.length; j++) {
+
+
+                            if (weather.daily.data[i].icon === conditionsArrayObjects[j].icon) {
+
+
+                                $('.appendIcon').html('');
+
+                                conditionsArrayObjects[j].img.appendTo($('.appendIcon'));
+
+                            }
+
+
+                        }
+
+
+                    }
+
+                });
+
+            }
+
+            marker.on('dragend', onDragEnd);
+
+
+
+
+            var latitude = "-98.491142";
+            var longitude = "29.424349";
+            // 29.424349,-98.491142 (San Antonio)
+            // 40.646061, -111.497971 (Park City)
+
+
+            $.get("https://cors-anywhere.herokuapp.com/https://api.darksky.net/forecast/" + darkSkySecretCode + "/29.424349,-98.491142").done(function (weather) {
+                //loop
+
+                console.log(weather.daily.data[0]);
+                console.log(weather.daily.data[1]);
+                console.log(weather.daily.data[2]);
+                console.log(weather.daily.data[0].temperatureLow);
+                console.log(weather.daily.data[0].temperatureHigh);
+                console.log(weather.daily.data[0].summary);
+                console.log(weather.daily.data[0].humidity);
+                console.log(weather.daily.data[0].windSpeed);
+                console.log(weather.daily.data[0].pressure);
+
+
+                var timeConversion = new Date((weather.daily.data[0].time * 1000));
+                console.log(timeConversion.toString());
+
+
+                //Three day forecast to have. I need a daily forecast of icon, summary, humidity, windspeed round, pressure, average temperature high and low.
+
+                // icon optional
+                // A machine-readable text summary of this data point, suitable for selecting an icon for display.
+                // If defined, this property will have one of the following values: clear-day, clear-night, rain, snow, sleet, wind, fog, cloudy, partly-cloudy-day,
+                // or partly-cloudy-night. (Developers should ensure that a sensible default is defined, as additional values, such as hail, thunderstorm, or tornado,
+                // may be defined in the future.)
+
+
+                //Create an array of JS objects containing a property for each of the following conditions: clear-day, clear-night, rain, snow, sleet, wind, fog, cloudy, partly-cloudy-day, partly-cloudy-night.
+
+
+                var conditionsArrayObjects = [
+
+                    {
+                        icon: "partly-cloudy-day",
+
+                        img: $('<img />', {
+                            id: 'iconIDCloud',
+                            src: "icon/cloudy.png",
+                            alt: "iconAlt"
+                        })
+
+
+                    },
+
+                    {
+                        icon: 'rain',
+
+                        img: $('<img />', {
+                            id: 'iconIDRain',
+                            src: "icon/rain.png",
+                            alt: "iconAlt"
+                        })
+                    },
+
+                    {
+                        icon: 'sunny',
+
+                        img: $('<img />', {
+                            id: 'iconIDSunny',
+                            src: "icon/Sunny.png",
+                            alt: "iconAlt"
+                        })
+                    }
+
+
+                ];
+
+                //Add a property to the array of icon objects for the url to the location that the appropriate icon is stored locally.
+
+
+                for (var i = 0; i < 3; i++) {
+
+
+                    $('.three-day-forecast').append('<div class="column">' + '<div class="wrapper">' +
+                        '<h2>' + weather.daily.data[i].temperatureLow + "&#176/" + weather.daily.data[i].temperatureHigh + "&#176" + '</h2>' +
+                        '<h2 class="appendIcon">' +
+                        '<h4>' + weather.daily.data[i].icon + '</h4>' + '</h2>' +
+                        '<h4>' + 'Humidity: ' + weather.daily.data[i].humidity + '</h4>' +
+                        '<h4>' + 'wind: ' + weather.daily.data[i].windSpeed + '</h4>' +
+                        '<h4>' + 'Pressure: ' + weather.daily.data[i].pressure + '</h4>' +
+                        '</div>' + '</div>');
+
+
+
+                    for (var j = 0; j < conditionsArrayObjects.length; j++) {
+
+
+                        if (weather.daily.data[i].icon === conditionsArrayObjects[j].icon) {
+
+
+                            $('.appendIcon').html('');
+
+                            conditionsArrayObjects[j].img.appendTo($('.appendIcon'));
+
+                        }
+
 
                     }
 
 
                 }
 
+            });
 
-            }
+        }
 
-        });
-
-    })();
+    )();
 
 </script>
 
