@@ -118,6 +118,14 @@ Longitude: <input id = "long" type="text" name="long"><br>
         "use strict";
 
 
+        $('#submitLatLong').click(function(){
+
+            var latitude = $('#lat').val();
+            var longitutde = $('#long').val();
+
+           console.log($('#lat').val());
+        })
+
         mapboxgl.accessToken = mapboxglaccessToken;
 
 
