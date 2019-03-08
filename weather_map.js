@@ -4,9 +4,9 @@ $(function () {
 // weather map
     var weather = $.get("https://cors-anywhere.herokuapp.com/https://api.darksky.net/forecast/"+ wkey +"/29.4241,-98.4936");
     weather.done(function (data,status,jqxhr) {
-        // console.log(data.latitude);
-        // console.log(data.longitude);
-        // console.log(data.timezone);
+         // console.log(data.latitude);
+         // console.log(data.longitude);
+         // console.log(data.timezone);
         // console.log(data.currently.temperature);
         // console.log(data.currently.windSpeed);
         // console.log(data.currently.pressure);
@@ -85,14 +85,6 @@ $(function () {
 
 
 
-
-
-
-
-
-
-
-
 // map box
 
     mapboxgl.accessToken = mkey;
@@ -100,9 +92,19 @@ $(function () {
     var map = new mapboxgl.Map({
         container: 'map',
         style: 'mapbox://styles/mapbox/streets-v9',
-        zoom:10,
-        center:[-98.4916,29.4252]
+        zoom:3,
+        center:[-98.85907099908773,39.46933743871111]
 
+    });
+
+// marker
+    var marker = new mapboxgl.Marker();
+    marker.setLngLat([-98.85907099908773,39.46933743871111]);
+    marker.addTo(map);
+    marker.setDraggable(true);
+    marker.on('dragend', function() {
+        console.log("lng: " + marker._lngLat.lng);
+        console.log("lat: " + marker._lngLat.lat)
     });
 
 });

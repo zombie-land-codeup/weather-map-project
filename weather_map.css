@@ -8,8 +8,9 @@
 }
 
 .row{
-    border: 1px #5e7985 solid;
+    border: 1px #0080a9 solid;
     text-align: center;
+    background-color: lightskyblue ;
 }
 
 #body{
