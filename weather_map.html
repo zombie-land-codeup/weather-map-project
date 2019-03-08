@@ -190,17 +190,26 @@
 
                 if(weather.daily.data[i].icon === 'partly-cloudy-day'){
 
-                    var img = document.createElement("img");
 
-                    console.log(img);
+                    var img = $('<img />', {
+                        id: 'iconID',
+                        src: "icon/cloudy.png",
+                        alt: "iconAlt"
+                    });
+                    img.appendTo($('.appendIcon'));
 
-                    img.src="icon/cloudy.png";
 
-                    var src = document.getElementsByClassName("appendIcon");
-
-                    console.log(src);
-
-                    src.appendChildren(img);
+                    // var img = document.createElement("img");
+                    //
+                    // console.log(img);
+                    //
+                    // img.src="icon/cloudy.png";
+                    //
+                    // var src = document.getElementsByClassName("appendIcon");
+                    //
+                    // console.log(src);
+                    //
+                    // src.appendChildren(img);
 
                 }
 
