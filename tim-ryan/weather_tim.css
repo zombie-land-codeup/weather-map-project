@@ -1,19 +1,55 @@
-body { margin:0; padding:0; }
-#map { position:absolute; top:0; bottom:0; width:100%; }
-
-
-.coordinates {
-    display: flex;
-    background: rgba(0,0,0,0.5);
-    color: #fff;
-    position: absolute;
-    bottom: 10px;
-    left: 10px;
-    padding:5px 10px;
-    margin: 0;
-    font-size: 11px;
-    line-height: 300px;
-    border-radius: 3px;
-    /*display: none;*/
+#geocoder-container > div {
+    min-width:50%;
+    margin-left:25%;
 }
+
+body { margin:0; padding:0; }
+
+#map {
+    position:absolute;
+    top:0;
+    bottom:0;
+    width:100%;
+
+}
+
+#outer_box {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    float: left;
+    height: 100%;
+    width: 300px;
+    background-color: black;
+    z-index: 1;
+    opacity: .5;
+}
+
+#toggle_Base_Map {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    float: right;
+    right: 255px;
+    top: 10px;
+    height: 40px;
+    width: 100px;
+    justify-content: center;
+    align-items: center;
+    background-color: black;
+    opacity: .5;
+    z-index: 1;
+
+}
+
+#inner_box {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 95%;
+    background-color: blue;
+}
+
+
+
 
