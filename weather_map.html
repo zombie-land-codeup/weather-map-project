@@ -6,6 +6,12 @@
 
     <!-- mapBox CSS -->
     <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.css' rel='stylesheet'/>
+
+
+   <!--Geocoder Link-->
+    <link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v3.1.4/mapbox-gl-geocoder.css' type='text/css' />
+
+
     <!-- Custom CSS -->
     <style>
 
@@ -77,9 +83,6 @@
 <h1>Weather Application</h1>
 
 
-Latitude: <input id = "lat" type="text" name="lat" ><br>
-Longitude: <input id = "long" type="text" name="long"><br>
-
 
 
 <h2 class="city"></h2>
@@ -109,6 +112,14 @@ Longitude: <input id = "long" type="text" name="long"><br>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 
+<!--Geocoder--------------->
+<script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v3.1.4/mapbox-gl-geocoder.min.js'></script>
+
+<!-- Mapbox Geocoder Util Methods -->
+<script src="js/mapbox-geocoder-utils.js"></script>
+
+
+
 
 <!--Custom javascript-->
 
@@ -137,6 +148,56 @@ Longitude: <input id = "long" type="text" name="long"><br>
 
             });
 
+
+            reverseGeocode({lng:-98.491142, lat: 29.424349}, mapboxglaccessToken).then(function (results) {
+
+                $('h2').append(results);
+
+                console.log( results);
+
+
+
+
+
+            });
+
+
+            var geocoder = new MapboxGeocoder({
+                accessToken: mapboxgl.accessToken
+            });
+
+            map.addControl(geocoder);
+
+        map.on('load', function() {
+            map.addSource('single-point', {
+                "type": "geojson",
+                "data": {
+                    "type": "FeatureCollection",
+                    "features": []
+                }
+            });
+
+            map.addLayer({
+                "id": "point",
+                "source": "single-point",
+                "type": "circle",
+                "paint": {
+                    "circle-radius": 10,
+                    "circle-color": "#007cbf"
+                }
+            });
+
+// Listen for the `result` event from the MapboxGeocoder that is triggered when a user
+// makes a selection and add a symbol that matches the result.
+            geocoder.on('result', function (ev) {
+                map.getSource('single-point').setData(ev.result.geometry);
+            });
+
+        });
+
+
+            // map.addControl(geocoder);
+
             var marker = new mapboxgl.Marker({
                 draggable: true
             });
@@ -147,156 +208,13 @@ Longitude: <input id = "long" type="text" name="long"><br>
             marker.addTo(map);
 
 
-        // marker.on('dragend', function() {
-        //     var cordination = ('/' + marker._lngLat.lat + ',' + marker._lngLat.lng);
-        //     console.log(cordination);
-
-            function onDragEnd() {
-
-                $('.three-day-forecast').html('');
-
-
-                var lngLat = marker.getLngLat();
-                $("#lat").append().attr("value", marker._lngLat.lat);
-                $("#long").append().attr("value", marker._lngLat.lng);
-                var coordination = ('/' + marker._lngLat.lat + ',' + marker._lngLat.lng);
-
-
-                $.get("https://cors-anywhere.herokuapp.com/https://api.darksky.net/forecast/" + darkSkySecretCode + coordination).done(function (weather) {
-                    //loop
-
-                    console.log(weather.daily.data[0]);
-                    console.log(weather.daily.data[1]);
-                    console.log(weather.daily.data[2]);
-                    console.log(weather.daily.data[0].temperatureLow);
-                    console.log(weather.daily.data[0].temperatureHigh);
-                    console.log(weather.daily.data[0].summary);
-                    console.log(weather.daily.data[0].humidity);
-                    console.log(weather.daily.data[0].windSpeed);
-                    console.log(weather.daily.data[0].pressure);
-
-
-                    var timeConversion = new Date((weather.daily.data[0].time * 1000));
-                    console.log(timeConversion.toString());
-
-
-                    //Three day forecast to have. I need a daily forecast of icon, summary, humidity, windspeed round, pressure, average temperature high and low.
-
-                    // icon optional
-                    // A machine-readable text summary of this data point, suitable for selecting an icon for display.
-                    // If defined, this property will have one of the following values: clear-day, clear-night, rain, snow, sleet, wind, fog, cloudy, partly-cloudy-day,
-                    // or partly-cloudy-night. (Developers should ensure that a sensible default is defined, as additional values, such as hail, thunderstorm, or tornado,
-                    // may be defined in the future.)
-
-
-                    //Create an array of JS objects containing a property for each of the following conditions: clear-day, clear-night, rain, snow, sleet, wind, fog, cloudy, partly-cloudy-day, partly-cloudy-night.
-
-
-                    var conditionsArrayObjects = [
-
-                        {
-                            icon: "partly-cloudy-day",
-
-                            img: $('<img />', {
-                                id: 'iconIDCloud',
-                                src: "icon/cloudy.png",
-                                alt: "iconAlt"
-                            })
-
-
-                        },
-
-                        {
-                            icon: 'rain',
-
-                            img: $('<img />', {
-                                id: 'iconIDRain',
-                                src: "icon/rain.png",
-                                alt: "iconAlt"
-                            })
-                        },
-
-                        {
-                            icon: 'sunny',
-
-                            img: $('<img />', {
-                                id: 'iconIDSunny',
-                                src: "icon/Sunny.png",
-                                alt: "iconAlt"
-                            })
-                        }
-
-
-                    ];
-
-                    //Add a property to the array of icon objects for the url to the location that the appropriate icon is stored locally.
-
-
-                    for (var i = 0; i < 3; i++) {
-
-
-                        $('.three-day-forecast').append('<div class="column">' + '<div class="wrapper">' +
-                            '<h2>' + weather.daily.data[i].temperatureLow + "&#176/" + weather.daily.data[i].temperatureHigh + "&#176" + '</h2>' +
-                            '<h2 class="appendIcon">' +
-                            '<h4>' + weather.daily.data[i].icon + '</h4>' + '</h2>' +
-                            '<h4>' + 'Humidity: ' + weather.daily.data[i].humidity + '</h4>' +
-                            '<h4>' + 'wind: ' + weather.daily.data[i].windSpeed + '</h4>' +
-                            '<h4>' + 'Pressure: ' + weather.daily.data[i].pressure + '</h4>' +
-                            '</div>' + '</div>');
-
-
-
-                        //Fix Icons looping
-
-                        for (var j = 0; j < conditionsArrayObjects.length; j++) {
-
-
-                            if (weather.daily.data[i].icon === conditionsArrayObjects[j].icon) {
-
-
-                                $('.appendIcon').html('');
-
-                                conditionsArrayObjects[j].img.appendTo($('.appendIcon'));
-
-                            }
-
-
-                        }
-
-
-                    }
-
-                });
-
-            }
-
-            marker.on('dragend', onDragEnd);
 
 
 
 
-            var latitude = "-98.491142";
-            var longitude = "29.424349";
-            // 29.424349,-98.491142 (San Antonio)
-            // 40.646061, -111.497971 (Park City)
+            function threeDayForecast(weather){
 
 
-            $.get("https://cors-anywhere.herokuapp.com/https://api.darksky.net/forecast/" + darkSkySecretCode + "/29.424349,-98.491142").done(function (weather) {
-                //loop
-
-                console.log(weather.daily.data[0]);
-                console.log(weather.daily.data[1]);
-                console.log(weather.daily.data[2]);
-                console.log(weather.daily.data[0].temperatureLow);
-                console.log(weather.daily.data[0].temperatureHigh);
-                console.log(weather.daily.data[0].summary);
-                console.log(weather.daily.data[0].humidity);
-                console.log(weather.daily.data[0].windSpeed);
-                console.log(weather.daily.data[0].pressure);
-
-
-                var timeConversion = new Date((weather.daily.data[0].time * 1000));
-                console.log(timeConversion.toString());
 
 
                 //Three day forecast to have. I need a daily forecast of icon, summary, humidity, windspeed round, pressure, average temperature high and low.
@@ -311,14 +229,17 @@ Longitude: <input id = "long" type="text" name="long"><br>
                 //Create an array of JS objects containing a property for each of the following conditions: clear-day, clear-night, rain, snow, sleet, wind, fog, cloudy, partly-cloudy-day, partly-cloudy-night.
 
 
+
+
+
                 var conditionsArrayObjects = [
 
                     {
                         icon: "partly-cloudy-day",
 
                         img: $('<img />', {
-                            id: 'iconIDCloud',
-                            src: "icon/cloudy.png",
+                            id: 'iconIDPartlyCloudy',
+                            src: "icon/partlyCloudy.png",
                             alt: "iconAlt"
                         })
 
@@ -343,6 +264,36 @@ Longitude: <input id = "long" type="text" name="long"><br>
                             src: "icon/Sunny.png",
                             alt: "iconAlt"
                         })
+                    },
+
+                    {
+                        icon: 'snow',
+
+                        img: $('<img />', {
+                            id: 'iconIDSnow',
+                            src: "icon/snowflake.png",
+                            alt: "iconAlt"
+                        })
+                    },
+
+                    {
+                        icon: 'cloudy',
+
+                        img: $('<img />', {
+                            id: 'iconIDCloudy',
+                            src: "icon/cloudy.png",
+                            alt: "iconAlt"
+                        })
+                    },
+
+                    {
+                        icon: 'wind',
+
+                        img: $('<img />', {
+                            id: 'iconIDWind',
+                            src: "icon/wind.png",
+                            alt: "iconAlt"
+                        })
                     }
 
 
@@ -352,6 +303,7 @@ Longitude: <input id = "long" type="text" name="long"><br>
 
 
                 for (var i = 0; i < 3; i++) {
+
 
 
                     $('.three-day-forecast').append('<div class="column">' + '<div class="wrapper">' +
@@ -365,25 +317,82 @@ Longitude: <input id = "long" type="text" name="long"><br>
 
 
 
-                    for (var j = 0; j < conditionsArrayObjects.length; j++) {
+
+                    //for each
 
 
-                        if (weather.daily.data[i].icon === conditionsArrayObjects[j].icon) {
+                    conditionsArrayObjects.forEach(function (element){
 
+                        if(weather.daily.data[i].icon === element.icon){
 
-                            $('.appendIcon').html('');
-
-                            conditionsArrayObjects[j].img.appendTo($('.appendIcon'));
-
+                            element.img.appendTo($('.appendIcon'));
                         }
 
 
-                    }
+                    });
 
 
                 }
+            }
+
+            marker.on('dragend', onDragEnd);
+
+            // 29.424349,-98.491142 (San Antonio)
+            // 40.646061, -111.497971 (Park City)
+
+        // reverse geocode method from mapbox-geocoder-utils.js
+
+
+
+
+
+            $.get("https://cors-anywhere.herokuapp.com/https://api.darksky.net/forecast/" + darkSkySecretCode + "/29.424349,-98.491142").done(function (weather) {
+                //loop
+
+
+                var timeConversion = new Date((weather.daily.data[0].time * 1000));
+                console.log(timeConversion.toString());
+
+                threeDayForecast(weather);
 
             });
+
+
+            function onDragEnd() {
+
+                $('.three-day-forecast').html('');
+
+
+                var lngLat = marker.getLngLat();
+                $("#lat").append().attr("value", marker._lngLat.lat);
+                $("#long").append().attr("value", marker._lngLat.lng);
+                var coordination = ('/' + marker._lngLat.lat + ',' + marker._lngLat.lng);
+
+                $('h2').html('');
+
+                reverseGeocode({lng:marker._lngLat.lng, lat: marker._lngLat.lat}, mapboxglaccessToken).then(function (results) {
+
+                    $('h2').append(results);
+
+                    console.log(results);
+
+                });
+
+
+
+
+               var weather = $.get("https://cors-anywhere.herokuapp.com/https://api.darksky.net/forecast/" + darkSkySecretCode + coordination);
+
+                   weather.done(function(weather) {
+
+
+                    threeDayForecast(weather);
+
+                });
+
+            }
+
+
 
         }
 
