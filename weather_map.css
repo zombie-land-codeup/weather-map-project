@@ -1,0 +1,37 @@
+#map {
+
+    height: 500px;
+}
+
+#container{
+    background-color: #d9f3fa;
+}
+
+.row{
+    border: 1px #0080a9 solid;
+    text-align: center;
+    background-color: lightskyblue ;
+}
+
+#body{
+    padding: 1%;
+    height: 400px;
+    background-color: #d9f3fa;
+}
+
+img{
+    height: 40px;
+    width: 60px;
+}
+
+#summary{
+    font-size: small;
+}
+
+#summary1{
+    font-size: small;
+}
+
+#summary2{
+    font-size: small;
+}
