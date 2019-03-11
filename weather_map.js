@@ -8,12 +8,19 @@ $(function () {
     var map = new mapboxgl.Map({
         container: 'map',
         style: 'mapbox://styles/mapbox/streets-v9',
-        zoom:3,
+        zoom:5,
         center:[-98.85907099908773,39.46933743871111]
 
-    });
+    }); //console.log(map)
 
-
+    // $.ajax({
+    //     url: 'http://maps.googleapis.com/maps/api/geocode/json?latlng='+lat+','+long+'&sensor=false',
+    //     success: function(data){
+    //         var formatted = data.results;
+    //         var address_array = formatted[6].formatted_address.split(',');
+    //         var city = address_array[0];
+    //     }
+    // });
 
 // moving pin
     var marker = new mapboxgl.Marker();
@@ -23,8 +30,10 @@ $(function () {
 
     marker.on('dragend', function() {
        var cordination = ('/' + marker._lngLat.lat + ',' + marker._lngLat.lng);
-console.log(cordination);
+       //console.log(marker.addTo(map));
 
+
+// removing the old icons
         $("#icon").html(" ");
         $("#icon1").html(" ");
         $("#icon2").html(" ");
@@ -33,15 +42,16 @@ console.log(cordination);
     var weather = $.get("https://cors-anywhere.herokuapp.com/https://api.darksky.net/forecast/"+ wkey + cordination);
 
     weather.done(function (data,status,jqxhr) {
-         console.log(data.latitude);
-         console.log(data.longitude);
-         console.log(data.timezone);
-         console.log(data.currently.temperature);
-         console.log(data.currently.windSpeed);
-         console.log(data.currently.pressure);
-         console.log(data.currently.humidity);
-         console.log(data.currently.summary);
-         console.log(data.currently.icon);
+         // console.log(data.latitude);
+         // console.log(data.longitude);
+         // console.log(data.timezone);
+         // console.log(data.currently.temperature);
+         // console.log(data.currently.windSpeed);
+         // console.log(data.currently.pressure);
+         // console.log(data.currently.humidity);
+         // console.log(data.currently.summary);
+         // console.log(data.currently.icon);
+         console.log(data);
 
 
 // first box
