@@ -54,3 +54,12 @@ map.addControl(geocoder);
             console.log(ev.result.center)
     });
 
+$('#display_customers').click(
+    function() {
+    }
+);
+
+$.get( "package.json", {
+}).done(function( data ) {
+    console.log(data.customers[0].name);
+});
