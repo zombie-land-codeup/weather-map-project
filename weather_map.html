@@ -156,9 +156,6 @@
                 console.log( results);
 
 
-
-
-
             });
 
 
@@ -168,35 +165,59 @@
 
             map.addControl(geocoder);
 
-        map.on('load', function() {
-            map.addSource('single-point', {
-                "type": "geojson",
-                "data": {
-                    "type": "FeatureCollection",
-                    "features": []
-                }
+            map.on('load', function() {
+                map.addSource('single-point', {
+                    "type": "geojson",
+                    "data": {
+                        "type": "FeatureCollection",
+                        "features": []
+                    }
             });
 
-            map.addLayer({
-                "id": "point",
-                "source": "single-point",
-                "type": "circle",
-                "paint": {
-                    "circle-radius": 10,
-                    "circle-color": "#007cbf"
-                }
-            });
+
 
 // Listen for the `result` event from the MapboxGeocoder that is triggered when a user
-// makes a selection and add a symbol that matches the result.
+// Passes the coordination for result to darkSky
+
+
+
             geocoder.on('result', function (ev) {
-                map.getSource('single-point').setData(ev.result.geometry);
+
+                $('.three-day-forecast').html('');
+
+                map.getSource('single-point').setData(ev.result.geometry)
+
+
+                var coordination = ('/' + ev.result.bbox[1] + ',' + ev.result.bbox[0]);
+                console.log(ev.result.bbox[0]);
+
+                var weather = $.get("https://cors-anywhere.herokuapp.com/https://api.darksky.net/forecast/" + darkSkySecretCode + coordination);
+
+                marker.setLngLat([ev.result.bbox[0], ev.result.bbox[1]]);
+                marker.addTo(map);
+
+
+
+
+                weather.done(function(weather) {
+
+
+                    threeDayForecast(weather);
+
+                });
             });
 
         });
 
 
-            // map.addControl(geocoder);
+
+
+
+
+        $('.three-day-forecast').html('');
+
+
+        // var lngLat = marker.getLngLat()
 
             var marker = new mapboxgl.Marker({
                 draggable: true
@@ -367,6 +388,7 @@
                 $("#lat").append().attr("value", marker._lngLat.lat);
                 $("#long").append().attr("value", marker._lngLat.lng);
                 var coordination = ('/' + marker._lngLat.lat + ',' + marker._lngLat.lng);
+                console.log(marker._lngLat.lat);
 
                 $('h2').html('');
 
@@ -374,7 +396,7 @@
 
                     $('h2').append(results);
 
-                    console.log(results);
+
 
                 });
 
@@ -391,6 +413,15 @@
                 });
 
             }
+
+            //Function to update weather forecast based off of search results
+
+
+
+
+
+
+
 
 
 
