@@ -1,26 +1,35 @@
 $(function () {
     "use strict";
 
-// map box
+
 
     mapboxgl.accessToken = mkey;
 
+// satellite and streets view button
+    $(".layers").click(function (layer) {
+        var layerId = layer.target.id;
+
+        if (layerId === 'streets') {
+            $(".layers").attr("id", "satellite");
+            map.setStyle('mapbox://styles/mapbox/' + layerId + '-v9');
+        }
+
+        if (layerId === 'satellite') {
+            $(".layers").attr("id", "streets");
+            map.setStyle('mapbox://styles/mapbox/' + layerId + '-v9');
+        }
+    });
+
+
+// map box
     var map = new mapboxgl.Map({
         container: 'map',
-        style: 'mapbox://styles/mapbox/streets-v9',
-        zoom:5,
+        style: "mapbox://styles/mapbox/streets-v9",
+        zoom:3,
         center:[-98.85907099908773,39.46933743871111]
 
     }); //console.log(map)
 
-    // $.ajax({
-    //     url: 'http://maps.googleapis.com/maps/api/geocode/json?latlng='+lat+','+long+'&sensor=false',
-    //     success: function(data){
-    //         var formatted = data.results;
-    //         var address_array = formatted[6].formatted_address.split(',');
-    //         var city = address_array[0];
-    //     }
-    // });
 
 // moving pin
     var marker = new mapboxgl.Marker();

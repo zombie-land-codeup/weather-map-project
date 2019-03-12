@@ -1,6 +1,7 @@
 #map {
 
     height: 500px;
+
 }
 
 #container{
@@ -15,7 +16,7 @@
 
 #body{
     padding: 1%;
-    height: 400px;
+    height: 300px;
     background-color: #d9f3fa;
 }
 
@@ -35,3 +36,27 @@ img{
 #summary2{
     font-size: small;
 }
+
+
+
+#streets{
+    background-image: url(https://media.giphy.com/media/l4FGF98EYYUovuL9m/giphy.gif);
+    height: 28%;
+    width: 30%;
+    z-index: 2;
+    position: absolute;
+   top: 570px;
+
+
+}
+
+#satellite{
+    background-image: url(https://media.giphy.com/media/8Am0UlfiwZcgEDOy4h/giphy.gif);
+    height: 28%;
+    width: 30%;
+    z-index: 2;
+    position: absolute;
+    top: 570px;
+}
+
+
