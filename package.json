@@ -1,7 +1,17 @@
 {
-  "name": "weather-map-project",
-  "version": "1.0.0",
-  "dependencies": {
-    
-  }
+  "customers": [
+    {
+      "name": "Tonja Demoff",
+      "latlng": [-98.512519, 29.665842]
+    },
+    {
+      "name": "Tim Carmichael",
+      "latlng": [-98.434947, 29.646919]
+    },
+    {
+      "name": "Wendy Newlun",
+      "latlng": [-98.2537, 29.588046]
+    }
+  ]
 }
+

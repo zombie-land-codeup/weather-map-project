@@ -4,7 +4,7 @@ mapboxgl.accessToken = 'pk.eyJ1IjoidGltcnlhbjEzMyIsImEiOiJjanN6MnJ0a3cwMWQyNGFsZ
 var map = new mapboxgl.Map({
     container: 'map', // container id
     style: 'mapbox://styles/mapbox/streets-v9', // stylesheet location
-    center: [-74.50, 40], // starting position [lng, lat]
+    center: [-98.4951, 29.4246], // starting position [lng, lat]
     zoom: 9 // starting zoom
 });
 
@@ -51,6 +51,6 @@ map.addControl(geocoder);
             .setLngLat(ev.result.center)
             .setPopup(popup)
             .addTo(map);
+            console.log(ev.result.center)
     });
-
 
