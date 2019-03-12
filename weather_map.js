@@ -1,8 +1,6 @@
 $(function () {
     "use strict";
 
-
-
     mapboxgl.accessToken = mkey;
 
 // satellite and streets view button
