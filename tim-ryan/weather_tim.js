@@ -60,6 +60,11 @@ $('#display_customers').click(
 );
 
 $.get( "package.json", {
-}).done(function( data ) {
-    console.log(data.customers[0].name);
+}).done(( data ) => {
+    const evens = data.filter(function(n) {
+        return n.customers.name;
+    });
+
+    console.log(evens);
 });
+
