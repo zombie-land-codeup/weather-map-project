@@ -8,8 +8,10 @@
     <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.css' rel='stylesheet'/>
 
 
-   <!--Geocoder Link-->
-    <link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v3.1.4/mapbox-gl-geocoder.css' type='text/css' />
+    <!--Geocoder Link-->
+    <link rel='stylesheet'
+          href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v3.1.4/mapbox-gl-geocoder.css'
+          type='text/css'/>
 
 
     <!-- Custom CSS -->
@@ -21,6 +23,7 @@
 
         }
 
+        /*Icon img Size*/
         img {
 
             width: 60px;
@@ -28,21 +31,20 @@
 
         }
 
-
+        /*Map Dimensions*/
         #map {
-            /* the width and height may be set to any size */
             width: 100%;
             height: 400px;
 
 
         }
 
-
+        /*3-day forecast border wrapper*/
         .wrapper {
             border-style: solid;
         }
 
-
+        /*wraps three day forecast and img*/
         .pageWrapper {
             padding-right: 10%;
             padding-left: 10%;
@@ -50,6 +52,7 @@
 
         }
 
+        /*appending forecast info to columns*/
         .column {
 
 
@@ -62,6 +65,7 @@
 
         }
 
+        /*forecast table*/
         .three-day-forecast {
 
             content: "";
@@ -75,6 +79,26 @@
 
         }
 
+        #streets {
+            background-image: url(https://media.giphy.com/media/l4FGF98EYYUovuL9m/giphy.gif);
+            height: 14%;
+            width: 15%;
+            z-index: 2;
+            position: absolute;
+            top: 500px;
+
+
+        }
+
+        #satellite {
+            background-image: url(https://media.giphy.com/media/8Am0UlfiwZcgEDOy4h/giphy.gif);
+            height: 14%;
+            width: 15%;
+            z-index: 2;
+            position: absolute;
+            top: 500px;
+        }
+
 
     </style>
 </head>
@@ -83,7 +107,7 @@
 <h1>Weather Application</h1>
 
 
-
+<!--Appending long lat city information-->
 
 <h2 class="city"></h2>
 
@@ -91,9 +115,15 @@
 
     <div class="three-day-forecast"></div>
 
-
     <!-- The HTML element that serves as the Mapbox container -->
+
     <div id='map'></div>
+
+    <!--Alternating between street and satellite view-->
+
+    <div>
+        <button id="satellite" class="layers"></button>
+    </div>
 
 </div>
 
@@ -119,8 +149,6 @@
 <script src="js/mapbox-geocoder-utils.js"></script>
 
 
-
-
 <!--Custom javascript-->
 
 <script>
@@ -129,130 +157,199 @@
             "use strict";
 
 
-            //  var latitude = $('#lat').val();
-            //  var longitude = $('#long').val();
-            //
-            // console.log($('#lat').val());
-            //  console.log($('#long').val());
+
+            function markerAndSearchFunctionalities() {
 
 
-            mapboxgl.accessToken = mapboxglaccessToken;
+                //To-do: Fix address issue, Enter city issue
+
+                mapboxgl.accessToken = mapboxglaccessToken;
+
+                //Map centered over San Antonio
+                var map = new mapboxgl.Map({
+                    container: 'map',
+                    style: 'mapbox://styles/mapbox/streets-v9',
+                    center: [-98.5795, 39.828175],
+                    zoom: 3
 
 
-            var map = new mapboxgl.Map({
-                container: 'map',
-                style: 'mapbox://styles/mapbox/streets-v9',
-                center: [-98.5795, 39.828175],
-                zoom: 3
+                });
 
 
-            });
 
+                // satellite and streets view button. Include functionalities:
+                $(".layers").click(function (layer) {
+                    var layerId = layer.target.id;
 
-            reverseGeocode({lng:-98.491142, lat: 29.424349}, mapboxglaccessToken).then(function (results) {
-
-                $('h2').append(results);
-
-                console.log( results);
-
-
-            });
-
-
-            var geocoder = new MapboxGeocoder({
-                accessToken: mapboxgl.accessToken
-            });
-
-            map.addControl(geocoder);
-
-            map.on('load', function() {
-                map.addSource('single-point', {
-                    "type": "geojson",
-                    "data": {
-                        "type": "FeatureCollection",
-                        "features": []
+                    if (layerId === 'streets') {
+                        $(".layers").attr("id", "satellite");
+                        map.setStyle('mapbox://styles/mapbox/' + layerId + '-v9');
                     }
-            });
+
+                    if (layerId === 'satellite') {
+                        $(".layers").attr("id", "streets");
+                        map.setStyle('mapbox://styles/mapbox/' + layerId + '-v9');
+                    }
+                });
+
+
+                //San Antonio reverseGeoCode appending results to h2 Default after loading page
+
+                reverseGeocode({lng: -98.491142, lat: 29.424349}, mapboxglaccessToken).then(function (results) {
+
+                    $('h2').append(results);
+
+                    console.log(results);
+
+
+                });
+
+
+                //Geocoder searching functionality implemented to map
+
+                var geocoder = new MapboxGeocoder({
+                    accessToken: mapboxgl.accessToken
+                });
+
+                map.addControl(geocoder);
+
+                //Geocoder results to implementation-new coordinates
+
+                map.on('load', function () {
+                    map.addSource('single-point', {
+                        "type": "geojson",
+                        "data": {
+                            "type": "FeatureCollection",
+                            "features": []
+                        }
+                    });
+
+                    // Add zoom and rotation controls to the map.
+
+                    var navZoom = new mapboxgl.NavigationControl();
+                    map.addControl(navZoom);
+
+
+                    // navZoom.on('click', function (e) {
+                    //
+                    //     map.flyTo({center: e.features[0].geometry.coordinates});
+                    //
+                    // });
 
 
 
-// Listen for the `result` event from the MapboxGeocoder that is triggered when a user
-// Passes the coordination for result to darkSky
+
+                    // Listen for the `result` event from the MapboxGeocoder that is triggered when a user
+                    // Passes the coordination for result to darkSky
+
+                    geocoder.on('result', function (ev) {
+
+                        //Clearing table
+
+                        $('.three-day-forecast').html('');
+
+                        //Get the lat and longs from the map Source geocoder search
+
+                        map.getSource('single-point').setData(ev.result.geometry)
+
+
+                        var coordination = ('/' + ev.result.bbox[1] + ',' + ev.result.bbox[0]);
+                        console.log(ev.result.bbox[0]);
+
+                        //Feed the coordinates from the search box to the darkSky update forecast
+
+                        var weather = $.get("https://cors-anywhere.herokuapp.com/https://api.darksky.net/forecast/" + darkSkySecretCode + coordination);
+
+                        //Move markers to new location
+
+                        marker.setLngLat([ev.result.bbox[0], ev.result.bbox[1]]);
+                        marker.addTo(map);
 
 
 
-            geocoder.on('result', function (ev) {
+
+
+
+                        weather.done(function (weather) {
+
+
+                            threeDayForecast(weather);
+
+                        });
+                    });
+
+                });
+
+
+                //Clears appended table
 
                 $('.three-day-forecast').html('');
 
-                map.getSource('single-point').setData(ev.result.geometry)
 
+                // marker location set on San Antonio
 
-                var coordination = ('/' + ev.result.bbox[1] + ',' + ev.result.bbox[0]);
-                console.log(ev.result.bbox[0]);
+                var marker = new mapboxgl.Marker({
+                    draggable: true
+                });
 
-                var weather = $.get("https://cors-anywhere.herokuapp.com/https://api.darksky.net/forecast/" + darkSkySecretCode + coordination);
-
-                marker.setLngLat([ev.result.bbox[0], ev.result.bbox[1]]);
+                marker.setLngLat([-98.491142, 29.424349]);
                 marker.addTo(map);
 
+                //Marker drag causes onDragEnd function to execute
+
+                marker.on('dragend', onDragEnd);
+
+                function onDragEnd() {
+
+                    //Clear table
+
+                    $('.three-day-forecast').html('');
+
+                    //get lang and lat based off new marker location
+
+                    var lngLat = marker.getLngLat();
+
+                    var coordination = ('/' + marker._lngLat.lat + ',' + marker._lngLat.lng);
+                    console.log(marker._lngLat.lat);
+
+                    //clear address
+
+                    $('h2').html('');
+
+
+                    //Appending the name of the reverseGeoCode coordinates to h2
+                    reverseGeocode({
+                        lng: marker._lngLat.lng,
+                        lat: marker._lngLat.lat
+                    }, mapboxglaccessToken).then(function (results) {
+
+                        $('h2').append(results);
+
+
+                    });
+
+                    //Update the weather based off of new coordinates from marker
+
+                    var weather = $.get("https://cors-anywhere.herokuapp.com/https://api.darksky.net/forecast/" + darkSkySecretCode + coordination);
+
+                    weather.done(function (weather) {
+
+
+                        threeDayForecast(weather);
+
+                    });
+
+                }
+
+
+            }
+
+
+            function threeDayForecast(weather) {
 
 
 
-                weather.done(function(weather) {
-
-
-                    threeDayForecast(weather);
-
-                });
-            });
-
-        });
-
-
-
-
-
-
-        $('.three-day-forecast').html('');
-
-
-        // var lngLat = marker.getLngLat()
-
-            var marker = new mapboxgl.Marker({
-                draggable: true
-            });
-
-            marker.setLngLat([-98.491142, 29.424349]);
-            $("#lat").append().attr("value", -98.491142);
-            $("#long").append().attr("value", 29.424349);
-            marker.addTo(map);
-
-
-
-
-
-
-            function threeDayForecast(weather){
-
-
-
-
-                //Three day forecast to have. I need a daily forecast of icon, summary, humidity, windspeed round, pressure, average temperature high and low.
-
-                // icon optional
-                // A machine-readable text summary of this data point, suitable for selecting an icon for display.
-                // If defined, this property will have one of the following values: clear-day, clear-night, rain, snow, sleet, wind, fog, cloudy, partly-cloudy-day,
-                // or partly-cloudy-night. (Developers should ensure that a sensible default is defined, as additional values, such as hail, thunderstorm, or tornado,
-                // may be defined in the future.)
-
-
-                //Create an array of JS objects containing a property for each of the following conditions: clear-day, clear-night, rain, snow, sleet, wind, fog, cloudy, partly-cloudy-day, partly-cloudy-night.
-
-
-
-
-
+                //Array of Weather Icons
                 var conditionsArrayObjects = [
 
                     {
@@ -320,11 +417,9 @@
 
                 ];
 
-                //Add a property to the array of icon objects for the url to the location that the appropriate icon is stored locally.
-
+                //Appending weather information from darkSky to the forecast table
 
                 for (var i = 0; i < 3; i++) {
-
 
 
                     $('.three-day-forecast').append('<div class="column">' + '<div class="wrapper">' +
@@ -337,16 +432,12 @@
                         '</div>' + '</div>');
 
 
+                    //Log for appending weather icons using loop (need to revise)
 
+                    conditionsArrayObjects.forEach(function (element) {
 
-                    //for each
-
-
-                    conditionsArrayObjects.forEach(function (element){
-
-                        if(weather.daily.data[i].icon === element.icon){
-
-                            element.img.appendTo($('.appendIcon'));
+                        if (weather.daily.data[i].icon === element.icon) {
+                            $('.appendIcon').prepend(element.img)
                         }
 
 
@@ -356,70 +447,22 @@
                 }
             }
 
-            marker.on('dragend', onDragEnd);
-
-            // 29.424349,-98.491142 (San Antonio)
-            // 40.646061, -111.497971 (Park City)
-
-        // reverse geocode method from mapbox-geocoder-utils.js
 
 
 
+            markerAndSearchFunctionalities();
+
+
+            //Feeding darkSky San Antonio coordinates for forecast
 
 
             $.get("https://cors-anywhere.herokuapp.com/https://api.darksky.net/forecast/" + darkSkySecretCode + "/29.424349,-98.491142").done(function (weather) {
                 //loop
 
 
-                var timeConversion = new Date((weather.daily.data[0].time * 1000));
-                console.log(timeConversion.toString());
-
                 threeDayForecast(weather);
 
             });
-
-
-            function onDragEnd() {
-
-                $('.three-day-forecast').html('');
-
-
-                var lngLat = marker.getLngLat();
-                $("#lat").append().attr("value", marker._lngLat.lat);
-                $("#long").append().attr("value", marker._lngLat.lng);
-                var coordination = ('/' + marker._lngLat.lat + ',' + marker._lngLat.lng);
-                console.log(marker._lngLat.lat);
-
-                $('h2').html('');
-
-                reverseGeocode({lng:marker._lngLat.lng, lat: marker._lngLat.lat}, mapboxglaccessToken).then(function (results) {
-
-                    $('h2').append(results);
-
-
-
-                });
-
-
-
-
-               var weather = $.get("https://cors-anywhere.herokuapp.com/https://api.darksky.net/forecast/" + darkSkySecretCode + coordination);
-
-                   weather.done(function(weather) {
-
-
-                    threeDayForecast(weather);
-
-                });
-
-            }
-
-            //Function to update weather forecast based off of search results
-
-
-
-
-
 
 
 
