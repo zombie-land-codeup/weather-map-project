@@ -1,6 +1,9 @@
 $(function () {
     "use strict";
 
+
+
+
     mapboxgl.accessToken = mkey;
 
 // satellite and streets view button
@@ -17,6 +20,27 @@ $(function () {
             map.setStyle('mapbox://styles/mapbox/' + layerId + '-v9');
         }
     });
+
+/*---Collapsing box --------------------------------------------------------------------------------------- */
+
+var tog = false;
+
+$("#box").hover(function () {
+    if (tog) {
+        $(this).animate({
+            "height": '67px',
+        }, 250);
+        $(this).children().css('display',  "none");
+
+
+    } else {
+        $(this).animate({
+            "height": '600px',
+        }, 250);
+            $(this).children().css('display',  "block");
+    }
+    tog = !tog;
+});
 
 
 // map box

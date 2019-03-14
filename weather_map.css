@@ -60,10 +60,10 @@ img{
 }
 
 #box {
-    position: relative;
-    height: 300px;
-    width: 300px;
-    background-color: grey;
+    display: flex;
+    position: absolute;
+    width: 100vw;
+    background-color: transparent;
     z-index: 1;
 }
 
