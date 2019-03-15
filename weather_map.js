@@ -19,6 +19,8 @@ $(function () {
 // icon0
         var icon0 = (data.daily.data[0].icon);
 
+
+
         if (icon0 === 'partly-cloudy-day' || icon0 === 'cloudy' || icon0 === 'fog' || icon0 === 'partly-cloudy-night') {
             $("#icon").prepend('<img src="cloudy.png" />');
         }
@@ -127,9 +129,24 @@ $(function () {
             var coordination = ('/' + ev.result.bbox[1] + ',' + ev.result.bbox[0]);
             console.log(coordination);
 
+
+
             //Feed the coordinates from the search box to the darkSky update forecast
             var weather = $.get("https://cors-anywhere.herokuapp.com/https://api.darksky.net/forecast/" + wkey + coordination);
             //Move markers to new location
+
+
+            $('#location').html('')
+            reverseGeocode({lng: ev.result.bbox[0], lat: ev.result.bbox[1]}, mkey).then(function (results) {
+                $('#location').append(results);
+                console.log(results);
+            });
+
+            // removing the old icons
+            $("#icon").html(" ");
+            $("#icon1").html(" ");
+            $("#icon2").html(" ");
+
             marker.setLngLat([ev.result.bbox[0], ev.result.bbox[1]]);
             marker.addTo(map);
             weather.done(function (data) {
